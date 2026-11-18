@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WeatherData } from '@/lib/types';
+import { CITIES, DEFAULT_CITY_ID, getCity } from '@/lib/cities';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
@@ -14,13 +15,15 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedCityId, setSelectedCityId] = useState(DEFAULT_CITY_ID);
+  const selectedCity = getCity(selectedCityId) ?? CITIES[0];
 
   const fetchCurrentWeather = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('/api/weather/current');
+      const response = await fetch(`/api/weather/current?city=${encodeURIComponent(selectedCityId)}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -97,18 +100,38 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrentWeather();
-  }, []);
+  }, [selectedCityId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            {selectedCity.name} Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information for {selectedCity.name}, {selectedCity.region}
           </p>
+          <div className="mt-4">
+            <label htmlFor="city-select" className="sr-only">
+              Select city
+            </label>
+            <select
+              id="city-select"
+              value={selectedCityId}
+              onChange={(e) => {
+                setCurrentWeather(null);
+                setSelectedCityId(e.target.value);
+              }}
+              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-4 shadow"
+            >
+              {CITIES.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}, {c.region}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {error && (

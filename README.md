@@ -121,7 +121,7 @@ To implement a new data source, create a class that implements the `WeatherDataS
 
 ### GET `/api/weather/current`
 
-Fetches current weather data for Dallas, TX from OpenWeatherMap.
+Fetches current weather data from OpenWeatherMap. Accepts an optional `city` query parameter (`dallas` (default) or `saint-louis`); unknown cities return a 400. Cities are defined in `lib/cities.ts`.
 
 **Response:**
 

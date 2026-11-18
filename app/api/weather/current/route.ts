@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { DEFAULT_CITY_ID, getCity } from '@/lib/cities';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
 
 export async function GET(request: NextRequest) {
+  const cityId = request.nextUrl.searchParams.get('city') || DEFAULT_CITY_ID;
+  const city = getCity(cityId);
+
+  if (!city) {
+    return NextResponse.json({ error: `City "${cityId}" not found` }, { status: 400 });
+  }
+
   if (!OPENWEATHER_API_KEY) {
     return NextResponse.json(
       { error: 'API key not configured. Please set OPENWEATHER_API_KEY in .env' },
@@ -17,8 +24,8 @@ export async function GET(request: NextRequest) {
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: city.lat,
+          lon: city.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },
@@ -35,7 +42,7 @@ export async function GET(request: NextRequest) {
       windSpeed: data.wind.speed,
       description: data.weather[0].description,
       icon: data.weather[0].icon,
-      city: data.name,
+      city: city.name,
       timestamp: new Date().toISOString(),
     };
 
