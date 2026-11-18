@@ -24,6 +24,16 @@ A Next.js application that displays real-time weather information for Dallas, Te
 - Node.js 18+ installed
 - OpenWeatherMap API key (free tier available)
 
+## Getting Started
+
+```bash
+npm install
+cp .env.example .env   # then set OPENWEATHER_API_KEY in .env
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000). See [Setup Instructions](#setup-instructions) below for details.
+
 ## Setup Instructions
 
 > **Note for Non-Technical Users**: See the simplified [INSTALLATION.md](./docs/INSTALLATION.md) guide in the docs folder.
@@ -61,7 +71,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Project Structure
 
 ```
-nextjs-poc/
+weather-app/
 ├── app/
 │   ├── api/
 │   │   └── weather/
