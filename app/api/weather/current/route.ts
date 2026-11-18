@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
+const SAINT_LOUIS_COORDS = { lat: 38.6270, lon: -90.1994 };
 
 export async function GET(request: NextRequest) {
   if (!OPENWEATHER_API_KEY) {
@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: SAINT_LOUIS_COORDS.lat,
+          lon: SAINT_LOUIS_COORDS.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },
