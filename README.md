@@ -2,6 +2,8 @@
 
 A Next.js application that displays real-time weather information for Dallas, Texas with the ability to save and view historical weather data.
 
+*Last updated: 2026-11-19*
+
 ## Features
 
 - **Real-time Weather Data**: Fetches current weather conditions for Dallas, TX using OpenWeatherMap API
