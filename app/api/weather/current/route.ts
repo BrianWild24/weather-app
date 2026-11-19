@@ -3,6 +3,35 @@ import axios from 'axios';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
+const PORTLAND_COORDS = { lat: 45.5152, lon: -122.6784 };
+
+async function fetchWeather(coords: { lat: number; lon: number }) {
+  const response = await axios.get(
+    'https://api.openweathermap.org/data/2.5/weather',
+    {
+      params: {
+        lat: coords.lat,
+        lon: coords.lon,
+        appid: OPENWEATHER_API_KEY,
+        units: 'imperial', // Fahrenheit
+      },
+    }
+  );
+
+  const data = response.data;
+
+  return {
+    temperature: data.main.temp,
+    feelsLike: data.main.feels_like,
+    humidity: data.main.humidity,
+    pressure: data.main.pressure,
+    windSpeed: data.wind.speed,
+    description: data.weather[0].description,
+    icon: data.weather[0].icon,
+    city: data.name,
+    timestamp: new Date().toISOString(),
+  };
+}
 
 export async function GET(request: NextRequest) {
   if (!OPENWEATHER_API_KEY) {
@@ -13,31 +42,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await axios.get(
-      'https://api.openweathermap.org/data/2.5/weather',
-      {
-        params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
-          appid: OPENWEATHER_API_KEY,
-          units: 'imperial', // Fahrenheit
-        },
-      }
-    );
-
-    const data = response.data;
-
-    const weatherData = {
-      temperature: data.main.temp,
-      feelsLike: data.main.feels_like,
-      humidity: data.main.humidity,
-      pressure: data.main.pressure,
-      windSpeed: data.wind.speed,
-      description: data.weather[0].description,
-      icon: data.weather[0].icon,
-      city: data.name,
-      timestamp: new Date().toISOString(),
-    };
+    const weatherData = await Promise.all([
+      fetchWeather(DALLAS_COORDS),
+      fetchWeather(PORTLAND_COORDS),
+    ]);
 
     return NextResponse.json(weatherData);
   } catch (error) {

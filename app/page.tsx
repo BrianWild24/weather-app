@@ -7,7 +7,7 @@ import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
 export default function Home() {
-  const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
+  const [currentWeather, setCurrentWeather] = useState<WeatherData[] | null>(null);
   const [weatherHistory, setWeatherHistory] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -51,25 +51,30 @@ export default function Home() {
   };
 
   const saveCurrentWeather = async () => {
-    if (!currentWeather) return;
+    if (!currentWeather || currentWeather.length === 0) return;
     
     setSaving(true);
     setError(null);
     setSuccessMessage(null);
     
     try {
-      const response = await fetch('/api/weather/history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(currentWeather),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save weather');
+      const responses = await Promise.all(
+        currentWeather.map((weather) =>
+          fetch('/api/weather/history', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(weather),
+          })
+        )
+      );
+
+      for (const response of responses) {
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error || 'Failed to save weather');
+        }
       }
       
       setSuccessMessage('Weather data saved successfully!');
@@ -104,10 +109,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information for Dallas, Texas and Portland, Oregon
           </p>
         </div>
 
@@ -132,7 +137,11 @@ export default function Home() {
               <p className="mt-4 text-gray-600 dark:text-gray-400">Loading weather data...</p>
             </div>
           ) : currentWeather ? (
-            <WeatherCard weather={currentWeather} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {currentWeather.map((weather) => (
+                <WeatherCard key={weather.city} weather={weather} />
+              ))}
+            </div>
           ) : null}
         </div>
 
