@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { WeatherData } from '@/lib/types';
 import { Cloud, Droplets, Wind, Gauge, ThermometerSun } from 'lucide-react';
 
@@ -17,9 +18,11 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
             {weather.description}
           </p>
         </div>
-        <img 
-          src={iconUrl} 
+        <Image
+          src={iconUrl}
           alt={weather.description}
+          width={96}
+          height={96}
           className="w-24 h-24"
         />
       </div>
