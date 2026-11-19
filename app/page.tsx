@@ -8,7 +8,7 @@ import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
 const LOCATION_OPTIONS = [
   { id: 'dallas', name: 'Dallas', region: 'Dallas, Texas' },
-  { id: 'chicago', name: 'Chicago', region: 'Chicago, Illinois' },
+  { id: 'champaign', name: 'Champaign', region: 'Champaign, Illinois' },
 ];
 
 export default function Home() {

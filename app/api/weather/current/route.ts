@@ -4,7 +4,7 @@ import axios from 'axios';
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 const LOCATIONS: Record<string, { lat: number; lon: number }> = {
   dallas: { lat: 32.7767, lon: -96.7970 },
-  chicago: { lat: 41.8781, lon: -87.6298 },
+  champaign: { lat: 40.1164, lon: -88.2434 },
 };
 const DEFAULT_LOCATION = 'dallas';
 
