@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
+const NEW_YORK_COORDS = { lat: 40.7128, lon: -74.0060 };
 
 export async function GET(request: NextRequest) {
   if (!OPENWEATHER_API_KEY) {
@@ -12,13 +13,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const city = (request.nextUrl.searchParams.get('city') || 'dallas').toLowerCase();
+  const coords = city === 'newyork' ? NEW_YORK_COORDS : DALLAS_COORDS;
+
   try {
     const response = await axios.get(
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: coords.lat,
+          lon: coords.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },

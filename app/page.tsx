@@ -10,6 +10,8 @@ export default function Home() {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
   const [weatherHistory, setWeatherHistory] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentWeatherNY, setCurrentWeatherNY] = useState<WeatherData | null>(null);
+  const [loadingNY, setLoadingNY] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -32,6 +34,26 @@ export default function Home() {
       setError(err instanceof Error ? err.message : 'Failed to fetch weather');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCurrentWeatherNY = async () => {
+    setLoadingNY(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/weather/current?city=newyork');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch weather');
+      }
+
+      setCurrentWeatherNY(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch weather');
+    } finally {
+      setLoadingNY(false);
     }
   };
 
@@ -97,6 +119,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrentWeather();
+    fetchCurrentWeatherNY();
   }, []);
 
   return (
@@ -104,10 +127,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information for Dallas, Texas and New York, New York
           </p>
         </div>
 
@@ -125,15 +148,27 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mb-8">
-          {loading && !currentWeather ? (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading weather data...</p>
-            </div>
-          ) : currentWeather ? (
-            <WeatherCard weather={currentWeather} />
-          ) : null}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div>
+            {loading && !currentWeather ? (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading Dallas weather...</p>
+              </div>
+            ) : currentWeather ? (
+              <WeatherCard weather={currentWeather} />
+            ) : null}
+          </div>
+          <div>
+            {loadingNY && !currentWeatherNY ? (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading New York weather...</p>
+              </div>
+            ) : currentWeatherNY ? (
+              <WeatherCard weather={currentWeatherNY} />
+            ) : null}
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-4 justify-center mb-8">
@@ -143,7 +178,16 @@ export default function Home() {
             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
           >
             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Weather</span>
+            <span>Refresh Dallas Weather</span>
+          </button>
+
+          <button
+            onClick={fetchCurrentWeatherNY}
+            disabled={loadingNY}
+            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
+          >
+            <RefreshCw className={`w-5 h-5 ${loadingNY ? 'animate-spin' : ''}`} />
+            <span>Refresh New York Weather</span>
           </button>
 
           <button
