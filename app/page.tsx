@@ -109,6 +109,9 @@ export default function Home() {
           <p className="text-gray-600 dark:text-gray-400">
             Real-time weather information for Dallas, Texas
           </p>
+          <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">
+            Data refreshes when you click Refresh
+          </p>
         </div>
 
         {error && (
