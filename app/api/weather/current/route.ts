@@ -2,9 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
+const LOCATIONS: Record<string, { lat: number; lon: number }> = {
+  dallas: { lat: 32.7767, lon: -96.7970 },
+  chicago: { lat: 41.8781, lon: -87.6298 },
+};
+const DEFAULT_LOCATION = 'dallas';
 
 export async function GET(request: NextRequest) {
+  const location = (
+    request.nextUrl.searchParams.get('location') || DEFAULT_LOCATION
+  ).toLowerCase();
+
+  if (!Object.prototype.hasOwnProperty.call(LOCATIONS, location)) {
+    return NextResponse.json(
+      {
+        error: `Invalid location "${location}". Valid locations: ${Object.keys(LOCATIONS).join(', ')}`,
+      },
+      { status: 400 }
+    );
+  }
+  const coords = LOCATIONS[location];
+
   if (!OPENWEATHER_API_KEY) {
     return NextResponse.json(
       { error: 'API key not configured. Please set OPENWEATHER_API_KEY in .env' },
@@ -17,8 +35,8 @@ export async function GET(request: NextRequest) {
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: coords.lat,
+          lon: coords.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },

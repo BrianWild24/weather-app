@@ -6,6 +6,11 @@ import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
+const LOCATION_OPTIONS = [
+  { id: 'dallas', name: 'Dallas', region: 'Dallas, Texas' },
+  { id: 'chicago', name: 'Chicago', region: 'Chicago, Illinois' },
+];
+
 export default function Home() {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
   const [weatherHistory, setWeatherHistory] = useState<WeatherData[]>([]);
@@ -14,13 +19,17 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState('dallas');
+  const selectedCity = LOCATION_OPTIONS.find((l) => l.id === selectedLocation) ?? LOCATION_OPTIONS[0];
 
   const fetchCurrentWeather = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('/api/weather/current');
+      const response = await fetch(
+        '/api/weather/current?location=' + encodeURIComponent(selectedLocation)
+      );
       const data = await response.json();
       
       if (!response.ok) {
@@ -96,19 +105,38 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setCurrentWeather(null);
     fetchCurrentWeather();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            {selectedCity.name} Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information for {selectedCity.region}
           </p>
+        </div>
+
+        <div className="flex gap-3 justify-center mb-8" role="group" aria-label="Select location">
+          {LOCATION_OPTIONS.map((loc) => (
+            <button
+              key={loc.id}
+              onClick={() => setSelectedLocation(loc.id)}
+              aria-pressed={selectedLocation === loc.id}
+              className={`font-semibold py-2 px-5 rounded-lg shadow transition-colors duration-200 ${
+                selectedLocation === loc.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              {loc.name}
+            </button>
+          ))}
         </div>
 
         {error && (
