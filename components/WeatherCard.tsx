@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { WeatherData } from '@/lib/types';
-import { Cloud, Droplets, Wind, Gauge, ThermometerSun } from 'lucide-react';
+import { Cloud, Droplets, Wind, Gauge, ThermometerSun, Clock } from 'lucide-react';
 
 interface WeatherCardProps {
   weather: WeatherData;
@@ -8,6 +8,15 @@ interface WeatherCardProps {
 
 export default function WeatherCard({ weather }: WeatherCardProps) {
   const iconUrl = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+  const lastUpdated = new Date(weather.timestamp).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
 
   return (
     <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl shadow-2xl p-8 text-white">
@@ -70,8 +79,12 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
         </div>
       </div>
 
-      <div className="mt-4 text-sm text-blue-100 text-center">
-        Last updated: {new Date(weather.timestamp).toLocaleString()}
+      <div className="mt-6 flex items-center justify-center space-x-2 bg-white/10 rounded-lg p-3">
+        <Clock className="w-5 h-5 text-blue-100" />
+        <div className="text-center">
+          <div className="text-xs text-blue-100">Last updated (local time)</div>
+          <div className="text-sm font-semibold">{lastUpdated}</div>
+        </div>
       </div>
     </div>
   );
