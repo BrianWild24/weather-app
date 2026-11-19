@@ -5,6 +5,7 @@ A Next.js application that displays real-time weather information for Dallas, Te
 ## Features
 
 - **Real-time Weather Data**: Fetches current weather conditions for Dallas, TX using OpenWeatherMap API
+- **5-Day Forecast**: Daily highs, lows, conditions, humidity and wind for the next 5 days in Dallas
 - **Beautiful UI**: Modern, responsive design with Tailwind CSS and Lucide icons
 - **Save Weather Data**: Store current weather snapshots to a local database
 - **Historical Data**: View all previously saved weather records in a table format
@@ -76,15 +77,18 @@ weather-app/
 │   ├── api/
 │   │   └── weather/
 │   │       ├── current/route.ts    # Fetches current weather from API
+│   │       ├── forecast/route.ts   # Fetches 5-day Dallas forecast
 │   │       └── history/route.ts    # Manages saved weather data
 │   ├── globals.css
 │   ├── layout.tsx
 │   └── page.tsx                    # Main dashboard page
 ├── components/
 │   ├── WeatherCard.tsx             # Displays current weather
+│   ├── ForecastCard.tsx            # Displays 5-day forecast cards
 │   └── HistoryTable.tsx            # Shows historical data
 ├── lib/
 │   ├── types.ts                    # TypeScript interfaces
+│   ├── forecast.ts                 # Groups 3-hour data into daily forecasts
 │   └── datasources/
 │       ├── index.ts                # Data source factory
 │       └── sqlite-datasource.ts    # SQLite implementation
@@ -137,6 +141,26 @@ Fetches current weather data for Dallas, TX from OpenWeatherMap.
   "city": "Dallas",
   "timestamp": "2025-10-07T22:16:33.000Z"
 }
+```
+
+### GET `/api/weather/forecast`
+
+Fetches a 5-day forecast for Dallas, TX (OpenWeatherMap 5-day / 3-hour data aggregated by Dallas-local date). Returns at most 5 entries sorted by date; the first entry is today, which may be partial.
+
+**Response:**
+
+```json
+[
+  {
+    "date": "2025-10-07",
+    "tempHigh": 88.1,
+    "tempLow": 66.4,
+    "description": "scattered clouds",
+    "icon": "03d",
+    "humidity": 55,
+    "windSpeed": 9.3
+  }
+]
 ```
 
 ### GET `/api/weather/history`

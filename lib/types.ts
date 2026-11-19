@@ -11,6 +11,16 @@ export interface WeatherData {
   timestamp: string;
 }
 
+export interface DailyForecast {
+  date: string;
+  tempHigh: number;
+  tempLow: number;
+  description: string;
+  icon: string;
+  humidity: number;
+  windSpeed: number;
+}
+
 export interface WeatherDataSource {
   save(data: Omit<WeatherData, 'id'>): Promise<void>;
   getAll(): Promise<WeatherData[]>;

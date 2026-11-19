@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { WeatherData } from '@/lib/types';
+import { WeatherData, DailyForecast } from '@/lib/types';
 import WeatherCard from '@/components/WeatherCard';
+import ForecastCard from '@/components/ForecastCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
@@ -14,6 +15,9 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [forecast, setForecast] = useState<DailyForecast[]>([]);
+  const [forecastLoading, setForecastLoading] = useState(false);
+  const [forecastError, setForecastError] = useState<string | null>(null);
 
   const fetchCurrentWeather = async () => {
     setLoading(true);
@@ -33,6 +37,31 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchForecast = async () => {
+    setForecastLoading(true);
+    setForecastError(null);
+
+    try {
+      const response = await fetch('/api/weather/forecast');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch forecast');
+      }
+
+      setForecast(data);
+    } catch (err) {
+      setForecastError(err instanceof Error ? err.message : 'Failed to fetch forecast');
+    } finally {
+      setForecastLoading(false);
+    }
+  };
+
+  const refreshAll = () => {
+    fetchCurrentWeather();
+    fetchForecast();
   };
 
   const fetchWeatherHistory = async () => {
@@ -97,6 +126,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrentWeather();
+    fetchForecast();
   }, []);
 
   return (
@@ -136,13 +166,32 @@ export default function Home() {
           ) : null}
         </div>
 
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            5-Day Outlook
+          </h2>
+          {forecastError ? (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center space-x-3">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+              <p className="text-red-800 dark:text-red-200">{forecastError}</p>
+            </div>
+          ) : forecast.length > 0 ? (
+            <ForecastCard forecast={forecast} />
+          ) : forecastLoading ? (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading forecast...</p>
+            </div>
+          ) : null}
+        </div>
+
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           <button
-            onClick={fetchCurrentWeather}
-            disabled={loading}
+            onClick={refreshAll}
+            disabled={loading || forecastLoading}
             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
           >
-            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-5 h-5 ${loading || forecastLoading ? 'animate-spin' : ''}`} />
             <span>Refresh Weather</span>
           </button>
 
