@@ -172,6 +172,18 @@ export default function Home() {
             <HistoryTable history={weatherHistory} />
           </div>
         )}
+
+        <footer className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          Weather data from{' '}
+          <a
+            href="https://openweathermap.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            OpenWeatherMap
+          </a>
+        </footer>
       </div>
     </div>
   );
