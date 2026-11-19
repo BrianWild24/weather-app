@@ -8,7 +8,7 @@ export default function HistoryTable({ history }: HistoryTableProps) {
   if (history.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
-        No historical data saved yet. Click "Save Current Weather" to start tracking!
+        No historical data saved yet. Click &quot;Save Current Weather&quot; to start tracking!
       </div>
     );
   }

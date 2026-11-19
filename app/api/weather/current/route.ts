@@ -4,6 +4,8 @@ import axios from 'axios';
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   if (!OPENWEATHER_API_KEY) {
     return NextResponse.json(
