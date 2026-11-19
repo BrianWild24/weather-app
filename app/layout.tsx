@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dallas Weather App",
-  description: "Weather application for Dallas, Texas",
+  title: "Dallas & Saint Louis Weather App",
+  description: "Weather application for Dallas, Texas and Saint Louis, Missouri",
 };
 
 export default function RootLayout({
