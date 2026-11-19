@@ -56,13 +56,25 @@ describe('SQLiteDataSource', () => {
       expect(await ds.getAll()).toEqual([]);
     });
 
-    it('orders rows by timestamp descending', async () => {
+    it('orders rows by timestamp ascending (oldest first)', async () => {
       await ds.save(makeWeather({ city: 'B', timestamp: '2024-01-02T00:00:00.000Z' }));
       await ds.save(makeWeather({ city: 'C', timestamp: '2024-01-03T00:00:00.000Z' }));
       await ds.save(makeWeather({ city: 'A', timestamp: '2024-01-01T00:00:00.000Z' }));
 
       const rows = await ds.getAll();
-      expect(rows.map((r) => r.city)).toEqual(['C', 'B', 'A']);
+      expect(rows.map((r) => r.city)).toEqual(['A', 'B', 'C']);
+    });
+
+    it('returns only the 50 newest rows, oldest first', async () => {
+      for (let i = 0; i < 60; i++) {
+        const ts = new Date(Date.UTC(2024, 0, 1, 0, i)).toISOString();
+        await ds.save(makeWeather({ city: `C${i}`, timestamp: ts }));
+      }
+
+      const rows = await ds.getAll();
+      expect(rows).toHaveLength(50);
+      expect(rows[0].city).toBe('C10');
+      expect(rows[49].city).toBe('C59');
     });
   });
 
