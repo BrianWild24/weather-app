@@ -52,7 +52,7 @@ export class SQLiteDataSource implements WeatherDataSource {
   async getAll(): Promise<WeatherData[]> {
     const stmt = this.db.prepare(`
       SELECT * FROM weather_history 
-      ORDER BY timestamp DESC
+      ORDER BY timestamp ASC
     `);
     
     return stmt.all() as WeatherData[];
