@@ -14,6 +14,20 @@ export const CITIES: City[] = [
     lat: 32.7767,
     lon: -96.7970,
   },
+  {
+    id: 'stlouis',
+    name: 'Saint Louis',
+    country: 'United States',
+    lat: 38.6270,
+    lon: -90.1994,
+  },
+  {
+    id: 'chicago',
+    name: 'Chicago',
+    country: 'United States',
+    lat: 41.8781,
+    lon: -87.6298,
+  },
 ];
 
 export function getCityById(cityId: string): City | undefined {

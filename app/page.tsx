@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { WeatherData } from '@/lib/types';
+import { CITIES } from '@/lib/cities';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
@@ -14,6 +15,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string>(CITIES[0].id);
 
   const fetchCurrentWeather = useCallback(async (city: string = 'dallas') => {
     setLoading(true);
@@ -96,8 +98,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchCurrentWeather();
-  }, [fetchCurrentWeather]);
+    fetchCurrentWeather(selectedCity);
+  }, [fetchCurrentWeather, selectedCity]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
@@ -139,9 +141,25 @@ export default function Home() {
           ) : null}
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center mb-8">
+        <div className="flex flex-wrap gap-4 justify-center items-center mb-8">
+          <label className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 font-semibold">
+            <span>City</span>
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              disabled={loading}
+              className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-3 px-4 shadow-lg"
+            >
+              {CITIES.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <button
-            onClick={() => fetchCurrentWeather()}
+            onClick={() => fetchCurrentWeather(selectedCity)}
             disabled={loading}
             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
           >

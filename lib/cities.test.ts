@@ -2,17 +2,29 @@ import { describe, it, expect } from 'vitest';
 import { CITIES, getCityById } from './cities';
 
 describe('cities', () => {
-  it('contains only Dallas', () => {
-    expect(CITIES.map((c) => c.id)).toEqual(['dallas']);
+  it('contains Dallas, Saint Louis and Chicago', () => {
+    expect(CITIES.map((c) => c.id)).toEqual(['dallas', 'stlouis', 'chicago']);
   });
 
   it('finds Dallas by id', () => {
     expect(getCityById('dallas')?.name).toBe('Dallas');
   });
 
-  it('returns undefined for removed cities', () => {
-    expect(getCityById('chicago')).toBeUndefined();
+  it('finds Saint Louis by id', () => {
+    const city = getCityById('stlouis');
+    expect(city?.name).toBe('Saint Louis');
+    expect(city?.lat).toBeCloseTo(38.627, 2);
+    expect(city?.lon).toBeCloseTo(-90.199, 2);
+  });
+
+  it('finds Chicago by id', () => {
+    const city = getCityById('chicago');
+    expect(city?.name).toBe('Chicago');
+    expect(city?.lat).toBeCloseTo(41.878, 2);
+    expect(city?.lon).toBeCloseTo(-87.63, 2);
+  });
+
+  it('returns undefined for unknown cities', () => {
     expect(getCityById('denver')).toBeUndefined();
-    expect(getCityById('stlouis')).toBeUndefined();
   });
 });
