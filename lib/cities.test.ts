@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { CITIES, getCityById } from './cities';
 
 describe('cities', () => {
-  it('contains Dallas, Saint Louis and Chicago', () => {
-    expect(CITIES.map((c) => c.id)).toEqual(['dallas', 'stlouis', 'chicago']);
+  it('contains Dallas, Saint Louis, Chicago and Denver', () => {
+    expect(CITIES.map((c) => c.id)).toEqual(['dallas', 'stlouis', 'chicago', 'denver']);
   });
 
   it('finds Dallas by id', () => {
@@ -18,7 +18,11 @@ describe('cities', () => {
     expect(getCityById('chicago')?.name).toBe('Chicago');
   });
 
+  it('finds Denver by id', () => {
+    expect(getCityById('denver')?.name).toBe('Denver');
+  });
+
   it('returns undefined for unsupported cities', () => {
-    expect(getCityById('denver')).toBeUndefined();
+    expect(getCityById('seattle')).toBeUndefined();
   });
 });
