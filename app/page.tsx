@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { WeatherData } from '@/lib/types';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
+import { CITIES, getCityById } from '@/lib/cities';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
 export default function Home() {
@@ -15,12 +16,14 @@ export default function Home() {
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const fetchCurrentWeather = useCallback(async (city: string = 'dallas') => {
+  const [selectedCity, setSelectedCity] = useState<string>('dallas');
+
+  const fetchCurrentWeather = useCallback(async (city: string = selectedCity) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/weather/current?city=${city}`);
+      const response = await fetch(`/api/weather/current?city=${encodeURIComponent(city)}`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -33,7 +36,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedCity]);
 
   const fetchWeatherHistory = async () => {
     try {
@@ -96,22 +99,41 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchCurrentWeather();
-  }, [fetchCurrentWeather]);
+    fetchCurrentWeather(selectedCity);
+  }, [fetchCurrentWeather, selectedCity]);
+
+  const selectedCityName = getCityById(selectedCity)?.name || 'Dallas';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {currentWeather?.city || 'Weather'} Dashboard
+            {selectedCityName} Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for {currentWeather?.city || 'Dallas'}
+            Real-time weather information for {selectedCityName}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
             Data refreshes when you click Refresh
           </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3 justify-center mb-8" role="group" aria-label="Select city">
+          {CITIES.map((city) => (
+            <button
+              key={city.id}
+              onClick={() => setSelectedCity(city.id)}
+              aria-pressed={city.id === selectedCity}
+              className={`font-semibold py-2 px-5 rounded-lg shadow transition-colors duration-200 ${
+                city.id === selectedCity
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              {city.name}
+            </button>
+          ))}
         </div>
 
         {error && (
