@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { WeatherData } from '@/lib/types';
+import { WeatherData, SUPPORTED_CITIES, CITY_NAMES } from '@/lib/types';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
 export default function Home() {
+  const [selectedCity, setSelectedCity] = useState('Dallas');
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
   const [weatherHistory, setWeatherHistory] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -15,12 +16,12 @@ export default function Home() {
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const fetchCurrentWeather = async () => {
+  const fetchCurrentWeather = async (city: string = selectedCity) => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('/api/weather/current');
+      const response = await fetch(`/api/weather/current?city=${encodeURIComponent(city)}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -33,6 +34,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+    fetchCurrentWeather(city);
   };
 
   const fetchWeatherHistory = async () => {
@@ -104,10 +110,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information for multiple cities
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
             Data refreshes when you click Refresh
@@ -128,6 +134,26 @@ export default function Home() {
           </div>
         )}
 
+        {/* City Selector */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Select City
+            </label>
+            <select
+              value={selectedCity}
+              onChange={(e) => handleCityChange(e.target.value)}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              {CITY_NAMES.map((city) => (
+                <option key={city} value={city}>
+                  {city}, {SUPPORTED_CITIES[city].state}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div className="mb-8">
           {loading && !currentWeather ? (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 text-center">
@@ -141,7 +167,7 @@ export default function Home() {
 
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           <button
-            onClick={fetchCurrentWeather}
+            onClick={() => fetchCurrentWeather()}
             disabled={loading}
             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
           >

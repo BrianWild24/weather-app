@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { SUPPORTED_CITIES } from '@/lib/cities';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
 
 export const dynamic = 'force-dynamic';
 
@@ -14,13 +14,26 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Get city from query parameter, default to Dallas
+  const city = request.nextUrl.searchParams.get('city') || 'Dallas';
+
+  // Validate that the requested city is supported
+  if (!SUPPORTED_CITIES[city]) {
+    return NextResponse.json(
+      { error: `City not supported: ${city}` },
+      { status: 400 }
+    );
+  }
+
+  const cityConfig = SUPPORTED_CITIES[city];
+
   try {
     const response = await axios.get(
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: cityConfig.lat,
+          lon: cityConfig.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },
