@@ -1,12 +1,13 @@
-# Dallas Weather Dashboard
+# Weather Dashboard
 
-A Next.js application that displays real-time weather information for Dallas, Texas with the ability to save and view historical weather data.
+A Next.js application that displays real-time weather information for multiple cities (Dallas, Saint Louis and Chicago) with the ability to save and view historical weather data.
 
 *Last updated: 2024-12-19 by Forge*
 
 ## Features
 
-- **Real-time Weather Data**: Fetches current weather conditions for Dallas, TX using OpenWeatherMap API
+- **Real-time Weather Data**: Fetches current weather conditions for selected cities (Dallas, TX; Saint Louis, MO; and Chicago, IL) using OpenWeatherMap API
+- **Multi-City Support**: Choose a city from the dropdown; your choice is remembered in the browser (localStorage)
 - **Beautiful UI**: Modern, responsive design with Tailwind CSS and Lucide icons
 - **Save Weather Data**: Store current weather snapshots to a local database
 - **Historical Data**: View all previously saved weather records in a table format
@@ -87,6 +88,7 @@ weather-app/
 │   └── HistoryTable.tsx            # Shows historical data
 ├── lib/
 │   ├── types.ts                    # TypeScript interfaces
+│   ├── cities.ts                   # Supported cities and coordinates
 │   └── datasources/
 │       ├── index.ts                # Data source factory
 │       └── sqlite-datasource.ts    # SQLite implementation
@@ -123,7 +125,13 @@ To implement a new data source, create a class that implements the `WeatherDataS
 
 ### GET `/api/weather/current`
 
-Fetches current weather data for Dallas, TX from OpenWeatherMap.
+Fetches current weather data for a supported city from OpenWeatherMap.
+
+**Query parameters:**
+
+- `city` (optional, default `dallas`): one of the keys in `lib/cities.ts` — `dallas`, `stlouis`, `chicago`. An unknown city returns HTTP 400 with an `error` message.
+
+Example: `/api/weather/current?city=stlouis`
 
 **Response:**
 
@@ -186,10 +194,11 @@ Saves weather data to the database.
 
 ## Usage
 
-1. **View Current Weather**: The dashboard automatically loads current weather on page load
-2. **Refresh Weather**: Click "Refresh Weather" to fetch the latest data
-3. **Save Weather**: Click "Save Current Weather" to store the current snapshot
-4. **View History**: Click "Show History" to display all saved weather records
+1. **Select City**: Choose between Dallas, Saint Louis or Chicago
+2. **View Current Weather**: The dashboard automatically loads current weather for the selected city on page load
+3. **Refresh Weather**: Click "Refresh Weather" to fetch the latest data
+4. **Save Weather**: Click "Save Current Weather" to store the current snapshot
+5. **View History**: Click "Show History" to display all saved weather records (for all cities)
 
 ## Building for Production
 
@@ -229,11 +238,13 @@ npm run build
 
 ### What This Application Does
 
-This application is a simple weather dashboard that shows you the current weather in Dallas, Texas. It has two main features:
+This application is a simple weather dashboard that shows you the current weather in Dallas, Saint Louis or Chicago. It has three main features:
 
-1. **View Current Weather**: When you open the application, it automatically shows you the current weather conditions in Dallas, including temperature, humidity, wind speed, and more.
+1. **Choose a City**: Use the "City" dropdown at the top of the page to pick Dallas, Saint Louis or Chicago. The page title and weather update to match, and the application remembers your choice the next time you open it.
 
-2. **Save Weather History**: You can save the current weather data by clicking a button, and then view all your saved weather records later. This helps you track weather changes over time.
+2. **View Current Weather**: When you open the application, it automatically shows you the current weather conditions for the selected city, including temperature, humidity, wind speed, and more.
+
+3. **Save Weather History**: You can save the current weather data by clicking a button, and then view all your saved weather records later. This helps you track weather changes over time.
 
 ### How to Use the Application
 
@@ -241,7 +252,9 @@ This application is a simple weather dashboard that shows you the current weathe
 
 1. **Open the Application**: After installation (which a technical person can help with), open your web browser and go to `http://localhost:3000`
 
-2. **View Current Weather**: The main page shows a weather card with the current conditions in Dallas
+2. **Select a City**: Use the "City" dropdown near the top to choose Dallas, Saint Louis or Chicago
+
+3. **View Current Weather**: The main page shows a weather card with the current conditions in the selected city
 
 3. **Refresh Weather**: Click the "Refresh Weather" button to get the most up-to-date information
 
@@ -277,4 +290,4 @@ A: No, all saved weather data is stored locally on your computer in the database
 A: Your saved weather history will still be available when you reopen the application, as it's stored in the database file.
 
 **Q: Can I change the location from Dallas to another city?**  
-A: The current version is set to Dallas only. Changing the location would require modifying the code.
+A: Yes. Use the "City" dropdown at the top of the page to switch between Dallas, Saint Louis and Chicago. To add more cities, a technical person can add them to `lib/cities.ts`.
