@@ -30,8 +30,17 @@ describe('Cities Configuration', () => {
       });
     });
 
-    it('should have exactly 3 supported cities', () => {
-      expect(Object.keys(SUPPORTED_CITIES)).toHaveLength(3);
+    it('should contain Denver with correct coordinates', () => {
+      expect(SUPPORTED_CITIES['Denver']).toEqual({
+        name: 'Denver',
+        lat: 39.7392,
+        lon: -104.9903,
+        state: 'Colorado',
+      });
+    });
+
+    it('should have exactly 4 supported cities', () => {
+      expect(Object.keys(SUPPORTED_CITIES)).toHaveLength(4);
     });
 
     it('should have valid latitude values between -90 and 90', () => {
@@ -54,10 +63,11 @@ describe('Cities Configuration', () => {
       expect(CITY_NAMES).toContain('Dallas');
       expect(CITY_NAMES).toContain('St. Louis');
       expect(CITY_NAMES).toContain('Chicago');
+      expect(CITY_NAMES).toContain('Denver');
     });
 
-    it('should have exactly 3 city names', () => {
-      expect(CITY_NAMES).toHaveLength(3);
+    it('should have exactly 4 city names', () => {
+      expect(CITY_NAMES).toHaveLength(4);
     });
 
     it('should match the keys of SUPPORTED_CITIES', () => {

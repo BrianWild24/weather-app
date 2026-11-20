@@ -25,6 +25,12 @@ export const SUPPORTED_CITIES: Record<string, CityConfig> = {
     lon: -87.6298,
     state: 'Illinois',
   },
+  Denver: {
+    name: 'Denver',
+    lat: 39.7392,
+    lon: -104.9903,
+    state: 'Colorado',
+  },
 };
 
 export const CITY_NAMES = Object.keys(SUPPORTED_CITIES);
