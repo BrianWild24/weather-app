@@ -1,3 +1,4 @@
+// Shared TypeScript types for weather data records and the data source interface used to store them.
 export interface WeatherData {
   id?: number;
   temperature: number;
