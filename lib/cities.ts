@@ -28,6 +28,13 @@ export const CITIES: City[] = [
     lat: 41.8781,
     lon: -87.6298,
   },
+  {
+    id: 'denver',
+    name: 'Denver',
+    country: 'United States',
+    lat: 39.7392,
+    lon: -104.9903,
+  },
 ];
 
 export function getCityById(cityId: string): City | undefined {

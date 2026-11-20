@@ -277,4 +277,4 @@ A: No, all saved weather data is stored locally on your computer in the database
 A: Your saved weather history will still be available when you reopen the application, as it's stored in the database file.
 
 **Q: Can I change the location from Dallas to another city?**  
-A: The dashboard offers Dallas, Saint Louis and Chicago through the city selector. Additional cities can be added to `lib/cities.ts`.
+A: The dashboard offers Dallas, Saint Louis, Chicago and Denver through the city selector. Additional cities can be added to `lib/cities.ts`.
