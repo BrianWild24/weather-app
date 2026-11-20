@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const DALLAS_COORDS = { lat: 32.7767, lon: -96.7970 };
+const CITIES = {
+  dallas: { name: 'Dallas', lat: 32.7767, lon: -96.7970 },
+  'saint-louis': { name: 'Saint Louis', lat: 38.6270, lon: -90.1994 },
+  chicago: { name: 'Chicago', lat: 41.8781, lon: -87.6298 },
+} as const;
+
+type CityKey = keyof typeof CITIES;
 
 export const dynamic = 'force-dynamic';
 
@@ -14,13 +20,19 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const cityKey = request.nextUrl.searchParams.get('city') ?? 'dallas';
+  if (!Object.hasOwn(CITIES, cityKey)) {
+    return NextResponse.json({ error: 'Unknown city' }, { status: 400 });
+  }
+  const city = CITIES[cityKey as CityKey];
+
   try {
     const response = await axios.get(
       'https://api.openweathermap.org/data/2.5/weather',
       {
         params: {
-          lat: DALLAS_COORDS.lat,
-          lon: DALLAS_COORDS.lon,
+          lat: city.lat,
+          lon: city.lon,
           appid: OPENWEATHER_API_KEY,
           units: 'imperial', // Fahrenheit
         },
@@ -37,7 +49,7 @@ export async function GET(request: NextRequest) {
       windSpeed: data.wind.speed,
       description: data.weather[0].description,
       icon: data.weather[0].icon,
-      city: data.name,
+      city: city.name,
       timestamp: new Date().toISOString(),
     };
 

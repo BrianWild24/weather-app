@@ -14,13 +14,14 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [city, setCity] = useState('dallas');
 
   const fetchCurrentWeather = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('/api/weather/current');
+      const response = await fetch(`/api/weather/current?city=${city}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -97,17 +98,17 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrentWeather();
-  }, []);
+  }, [city]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dallas Weather Dashboard
+            Weather Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for Dallas, Texas
+            Real-time weather information
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
             Data refreshes when you click Refresh
@@ -127,6 +128,19 @@ export default function Home() {
             <p className="text-green-800 dark:text-green-200">{successMessage}</p>
           </div>
         )}
+
+        <div className="mb-4 flex justify-center">
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            aria-label="Select city"
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg shadow py-2 px-4"
+          >
+            <option value="dallas">Dallas</option>
+            <option value="saint-louis">Saint Louis</option>
+            <option value="chicago">Chicago</option>
+          </select>
+        </div>
 
         <div className="mb-8">
           {loading && !currentWeather ? (
