@@ -1,3 +1,4 @@
+// Data source entry point: exposes getDataSource(), which returns the SQLite-backed WeatherDataSource, and re-exports SQLiteDataSource.
 import { WeatherDataSource } from '../types';
 import { SQLiteDataSource } from './sqlite-datasource';
 
