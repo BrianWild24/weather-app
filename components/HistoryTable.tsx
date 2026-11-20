@@ -1,3 +1,4 @@
+// Table of saved historical weather records (time, temperature, feels-like, humidity, wind, description), or an empty-state message.
 import { WeatherData } from '@/lib/types';
 
 interface HistoryTableProps {

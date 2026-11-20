@@ -1,3 +1,4 @@
+// Card showing current weather for a city: temperature, conditions, humidity, wind, pressure and last-updated time.
 import Image from 'next/image';
 import { WeatherData } from '@/lib/types';
 import { Cloud, Droplets, Wind, Gauge, ThermometerSun } from 'lucide-react';
