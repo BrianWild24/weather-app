@@ -2,8 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { CITIES, getCityById } from './cities';
 
 describe('cities', () => {
-  it('contains only Dallas', () => {
-    expect(CITIES.map((c) => c.id)).toEqual(['dallas']);
+  it('contains Dallas and Saint Louis', () => {
+    expect(CITIES.map((c) => c.id)).toEqual(['dallas', 'stlouis']);
+  });
+
+  it('finds Saint Louis by id', () => {
+    expect(getCityById('stlouis')?.name).toBe('Saint Louis');
   });
 
   it('finds Dallas by id', () => {
@@ -13,6 +17,5 @@ describe('cities', () => {
   it('returns undefined for removed cities', () => {
     expect(getCityById('chicago')).toBeUndefined();
     expect(getCityById('denver')).toBeUndefined();
-    expect(getCityById('stlouis')).toBeUndefined();
   });
 });

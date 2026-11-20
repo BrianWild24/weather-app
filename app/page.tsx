@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { WeatherData } from '@/lib/types';
+import { CITIES } from '@/lib/cities';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
@@ -13,6 +14,7 @@ export default function Home() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('dallas');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const fetchCurrentWeather = useCallback(async (city: string = 'dallas') => {
@@ -96,18 +98,21 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchCurrentWeather();
-  }, [fetchCurrentWeather]);
+    fetchCurrentWeather(selectedCity);
+  }, [fetchCurrentWeather, selectedCity]);
+
+  const selectedCityName =
+    CITIES.find((c) => c.id === selectedCity)?.name || 'Weather';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {currentWeather?.city || 'Weather'} Dashboard
+            {selectedCityName} Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for {currentWeather?.city || 'Dallas'}
+            Real-time weather information for {selectedCityName}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
             Data refreshes when you click Refresh
@@ -140,8 +145,22 @@ export default function Home() {
         </div>
 
         <div className="flex flex-wrap gap-4 justify-center mb-8">
+          <select
+            aria-label="Select city"
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+            disabled={loading}
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-semibold py-3 px-4 rounded-lg shadow-lg border border-gray-300 dark:border-gray-600"
+          >
+            {CITIES.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+
           <button
-            onClick={() => fetchCurrentWeather()}
+            onClick={() => fetchCurrentWeather(selectedCity)}
             disabled={loading}
             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
           >
