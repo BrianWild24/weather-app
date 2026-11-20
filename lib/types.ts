@@ -18,3 +18,7 @@ export interface WeatherDataSource {
   getById(id: number): Promise<WeatherData | null>;
   deleteById(id: number): Promise<void>;
 }
+
+// Re-export city configuration types for convenience
+export type { CityConfig } from './cities';
+export { SUPPORTED_CITIES, CITY_NAMES } from './cities';
