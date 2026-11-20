@@ -1,3 +1,4 @@
+// Table of saved Dallas weather snapshots (date/time, temperature, feels like, humidity, wind speed, description), or an empty-state message when there are none.
 import { WeatherData } from '@/lib/types';
 
 interface HistoryTableProps {
