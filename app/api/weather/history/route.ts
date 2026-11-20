@@ -1,3 +1,4 @@
+// Weather history API: GET returns all saved weather records, POST validates and saves a new record.
 import { NextRequest, NextResponse } from 'next/server';
 import { getDataSource } from '@/lib/datasources';
 
