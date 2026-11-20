@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { WeatherData } from '@/lib/types';
 import WeatherCard from '@/components/WeatherCard';
 import HistoryTable from '@/components/HistoryTable';
-import CitySelector from '@/components/CitySelector';
 import { RefreshCw, Save, History, AlertCircle } from 'lucide-react';
 
 export default function Home() {
@@ -15,30 +14,26 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string>('dallas');
 
-  const fetchCurrentWeather = useCallback(
-    async (city: string = selectedCity) => {
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const response = await fetch(`/api/weather/current?city=${city}`);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to fetch weather');
-        }
-        
-        setCurrentWeather(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch weather');
-      } finally {
-        setLoading(false);
+  const fetchCurrentWeather = useCallback(async (city: string = 'dallas') => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/weather/current?city=${city}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch weather');
       }
-    },
-    [selectedCity]
-  );
+
+      setCurrentWeather(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch weather');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const fetchWeatherHistory = async () => {
     try {
@@ -100,11 +95,6 @@ export default function Home() {
     setShowHistory(!showHistory);
   };
 
-  const handleCityChange = async (cityId: string) => {
-    setSelectedCity(cityId);
-    await fetchCurrentWeather(cityId);
-  };
-
   useEffect(() => {
     fetchCurrentWeather();
   }, [fetchCurrentWeather]);
@@ -116,11 +106,8 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             {currentWeather?.city || 'Weather'} Dashboard
           </h1>
-          <div className="mb-4">
-            <CitySelector selectedCity={selectedCity} onCityChange={handleCityChange} />
-          </div>
           <p className="text-gray-600 dark:text-gray-400">
-            Real-time weather information for {currentWeather?.city || 'your selected city'}
+            Real-time weather information for {currentWeather?.city || 'Dallas'}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
             Data refreshes when you click Refresh
