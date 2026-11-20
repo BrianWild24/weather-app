@@ -1,3 +1,4 @@
+/* Global styles: Tailwind directives, light/dark theme color variables, and base body styling. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

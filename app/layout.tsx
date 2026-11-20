@@ -1,3 +1,4 @@
+// Root layout: sets the page metadata and wraps every page in the <html>/<body> shell.
 import type { Metadata } from "next";
 import "./globals.css";
 
