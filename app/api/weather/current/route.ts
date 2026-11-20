@@ -6,6 +6,7 @@ const CITIES = {
   dallas: { name: 'Dallas', lat: 32.7767, lon: -96.7970 },
   'saint-louis': { name: 'Saint Louis', lat: 38.6270, lon: -90.1994 },
   chicago: { name: 'Chicago', lat: 41.8781, lon: -87.6298 },
+  denver: { name: 'Denver', lat: 39.7392, lon: -104.9903 },
 } as const;
 
 type CityKey = keyof typeof CITIES;

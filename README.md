@@ -123,7 +123,7 @@ To implement a new data source, create a class that implements the `WeatherDataS
 
 ### GET `/api/weather/current`
 
-Fetches current weather data from OpenWeatherMap. Optional query param `?city=dallas|saint-louis|chicago` (default `dallas`); an unknown city returns 400.
+Fetches current weather data from OpenWeatherMap. Optional query param `?city=dallas|saint-louis|chicago|denver` (default `dallas`); an unknown city returns 400.
 
 **Response:**
 
@@ -277,4 +277,4 @@ A: No, all saved weather data is stored locally on your computer in the database
 A: Your saved weather history will still be available when you reopen the application, as it's stored in the database file.
 
 **Q: Can I change the location from Dallas to another city?**  
-A: Yes, use the city dropdown to choose Dallas (default), Saint Louis or Chicago. Adding more cities requires editing the `CITIES` map in `app/api/weather/current/route.ts`.
+A: Yes, use the city dropdown to choose Dallas (default), Saint Louis, Chicago or Denver. Adding more cities requires editing the `CITIES` map in `app/api/weather/current/route.ts`.

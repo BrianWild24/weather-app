@@ -139,6 +139,7 @@ export default function Home() {
             <option value="dallas">Dallas</option>
             <option value="saint-louis">Saint Louis</option>
             <option value="chicago">Chicago</option>
+            <option value="denver">Denver</option>
           </select>
         </div>
 
