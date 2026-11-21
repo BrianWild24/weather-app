@@ -278,3 +278,5 @@ A: Your saved weather history will still be available when you reopen the applic
 
 **Q: Can I change the location from Dallas to another city?**  
 A: The current version is set to Dallas only. Changing the location would require modifying the code.
+
+PR.1 status test
