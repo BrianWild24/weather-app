@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { WeatherData } from '@/lib/types';
+import { formatPressure } from '@/lib/format';
 import { Cloud, Droplets, Wind, Gauge, ThermometerSun } from 'lucide-react';
 
 interface WeatherCardProps {
@@ -57,7 +58,7 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
           <Gauge className="w-6 h-6" />
           <div>
             <div className="text-sm text-blue-100">Pressure</div>
-            <div className="font-semibold text-lg">{weather.pressure} hPa</div>
+            <div className="font-semibold text-lg">{formatPressure(weather.pressure)}</div>
           </div>
         </div>
 

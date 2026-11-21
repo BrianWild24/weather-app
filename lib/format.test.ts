@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatTemperature } from './format';
+import { formatTemperature, formatPressure } from './format';
 
 describe('formatTemperature', () => {
   it('rounds up to one decimal', () => {
@@ -24,5 +24,23 @@ describe('formatTemperature', () => {
 
   it('does not return negative zero', () => {
     expect(formatTemperature(-0.04)).toBe('0.0°C');
+  });
+});
+
+describe('formatPressure', () => {
+  it('rounds down to a whole number', () => {
+    expect(formatPressure(1013.4)).toBe('1013 hPa');
+  });
+
+  it('rounds up to a whole number', () => {
+    expect(formatPressure(1012.6)).toBe('1013 hPa');
+  });
+
+  it('leaves integers unchanged', () => {
+    expect(formatPressure(1013)).toBe('1013 hPa');
+  });
+
+  it('formats zero', () => {
+    expect(formatPressure(0)).toBe('0 hPa');
   });
 });

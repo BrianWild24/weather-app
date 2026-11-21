@@ -3,3 +3,7 @@ export function formatTemperature(celsius: number): string {
   const formatted = celsius.toFixed(1);
   return `${formatted === '-0.0' ? '0.0' : formatted}°C`;
 }
+
+export function formatPressure(hPa: number): string {
+  return `${Math.round(hPa)} hPa`;
+}
