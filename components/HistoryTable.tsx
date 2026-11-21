@@ -1,4 +1,5 @@
 import { WeatherData } from '@/lib/types';
+import { formatHumidity } from '@/lib/format';
 
 interface HistoryTableProps {
   history: WeatherData[];
@@ -51,7 +52,7 @@ export default function HistoryTable({ history }: HistoryTableProps) {
                 {Math.round(record.feelsLike)}°F
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                {record.humidity}%
+                {formatHumidity(record.humidity)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                 {record.windSpeed} mph

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { WeatherData } from '@/lib/types';
+import { formatHumidity } from '@/lib/format';
 import { Cloud, Droplets, Wind, Gauge, ThermometerSun } from 'lucide-react';
 
 interface WeatherCardProps {
@@ -41,7 +42,7 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
           <Droplets className="w-6 h-6" />
           <div>
             <div className="text-sm text-blue-100">Humidity</div>
-            <div className="font-semibold text-lg">{weather.humidity}%</div>
+            <div className="font-semibold text-lg">{formatHumidity(weather.humidity)}</div>
           </div>
         </div>
 
