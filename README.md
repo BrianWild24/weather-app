@@ -1,5 +1,7 @@
 # Dallas Weather Dashboard
 
+Data: OpenWeatherMap
+
 A Next.js application that displays real-time weather information for Dallas, Texas with the ability to save and view historical weather data.
 
 *Last updated: 2024-12-19 by Forge*
